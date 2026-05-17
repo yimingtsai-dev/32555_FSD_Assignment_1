@@ -8,7 +8,7 @@ import os
 class StudentSystem:
     def __init__(self):
         self.currentStudent = None
-        self.data_manager = DataManager()
+        self.dataManager = DataManager()
 
     def run(self):
         while True:
@@ -37,8 +37,8 @@ class StudentSystem:
             name = input("Enter your name: ")
             email = input("Enter your email: ")
 
-            if self.check_valid_name_email(name, email):
-                if self.data_manager.email_exists(email):
+            if self.checkValidNameEmail(name, email):
+                if self.dataManager.emailExists(email):
                     print("This email is already registered. Please try again.\n")
                 else:
                     break
@@ -48,7 +48,7 @@ class StudentSystem:
         while True:
             pwd = getpass("Enter your password: ")
 
-            if self.check_valid_pwd(pwd):
+            if self.checkValidPwd(pwd):
                 repwd = getpass("Confirm your password: ")
 
                 if repwd == pwd:
@@ -57,10 +57,10 @@ class StudentSystem:
                 else:
                     print("Passwords do not match. Please try again.\n")
 
-        student_id = self.data_manager.generate_student_id()
+        student_id = self.dataManager.generateStudentId()
         student = Student(student_id, name, email, pwd)
 
-        self.data_manager.add_student(student)
+        self.dataManager.addStudent(student)
         self.currentStudent = student
 
         print(f"Registration successful. Your student ID is {student.id}\n")
@@ -84,7 +84,7 @@ class StudentSystem:
                 os.system("cls")
                 break
 
-            student = self.data_manager.find_student_by_login(email, pwd)
+            student = self.dataManager.findStudentByLogin(email, pwd)
 
             if student is not None:
                 self.currentStudent = student
@@ -98,7 +98,7 @@ class StudentSystem:
                 input("Press Enter to try again...")
                 os.system("cls")
 
-    def check_valid_name_email(self, name, email):
+    def checkValidNameEmail(self, name, email):
         parts = name.strip().split()
 
         if len(parts) != 2:
@@ -116,7 +116,7 @@ class StudentSystem:
 
         return True
 
-    def check_valid_pwd(self, password):
+    def checkValidPwd(self, password):
         if not password:
             print("Password cannot be empty.\n")
             return False
@@ -191,13 +191,13 @@ class StudentSystem:
             print("You cannot enrol in more than four subjects.\n")
             return
         os.system("cls")
-        subject_id = self.generate_subject_id()
+        subject_id = self.generateSubjectId()
         mark = random.randint(25, 100)
 
         new_subject = Subject(subject_id, mark)
         self.currentStudent.subjects.append(new_subject)
 
-        self.data_manager.update_student(self.currentStudent)
+        self.dataManager.updateStudent(self.currentStudent)
 
         print("Subject enrolled successfully.")
         print(f"Subject ID: {new_subject.subjectId}")
@@ -207,7 +207,7 @@ class StudentSystem:
         input()
         os.system("cls")
     
-    def generate_subject_id(self):
+    def generateSubjectId(self):
         current_ids = set()
 
         for subject in self.currentStudent.subjects:
@@ -252,7 +252,7 @@ class StudentSystem:
 
             if 1 <= choice <= len(self.currentStudent.subjects):
                 self.currentStudent.subjects.pop(choice - 1)
-                self.data_manager.update_student(self.currentStudent)
+                self.dataManager.updateStudent(self.currentStudent)
                 print("Subject removed successfully.\n")
                 input("Press Enter to continue...")
                 os.system("cls")    
@@ -296,7 +296,7 @@ class StudentSystem:
         while True:
             new_pwd = getpass("Enter your new password: ")
 
-            if not self.check_valid_pwd(new_pwd):
+            if not self.checkValidPwd(new_pwd):
                 continue
 
             confirm_pwd = getpass("Confirm your new password: ")
@@ -306,7 +306,7 @@ class StudentSystem:
                 continue
 
             self.currentStudent.password = new_pwd
-            self.data_manager.update_student(self.currentStudent)
+            self.dataManager.updateStudent(self.currentStudent)
             print("Password changed successfully.\n")
             input("Press Enter to continue...")
             os.system("cls")

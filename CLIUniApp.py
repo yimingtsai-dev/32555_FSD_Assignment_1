@@ -1,10 +1,9 @@
-from student_system import StudentSystem
 from admin_system import AdminSystem
+from controller import StudentGUI
+import tkinter as tk
 
-import os
 def main():
     while True:
-        os.system("cls")
         print("Welcome To UniApp CLI version! Select your subsystem")
         print("1: Login as student")
         print("2: Login as admin")
@@ -13,11 +12,10 @@ def main():
         ip = input("Enter your option: ")
 
         if ip == "1":
-            os.system("cls")
-            ss = StudentSystem()
-            ss.run()
+            root = tk.Tk()
+            StudentGUI(root)
+            root.mainloop()
         elif ip == "2":
-            os.system("cls")
             asys = AdminSystem()
             asys.run()
         elif ip == "3":

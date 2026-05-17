@@ -4,7 +4,7 @@ import os
 
 class AdminSystem:
     def __init__(self):
-        self.data_manager = DataManager()
+        self.dataManager = DataManager()
     def run(self):
         os.system("cls")
         print("Entering Admin System...\n")
@@ -37,7 +37,7 @@ class AdminSystem:
 
     def viewStudents(self):
         os.system("cls")
-        students = self.data_manager.load_all_students_list()
+        students = self.dataManager.loadAllStudentsList()
 
         if len(students) == 0:
             print("No student data found.\n")
@@ -59,7 +59,7 @@ class AdminSystem:
     def removeStudent(self):
         while True:
             os.system("cls")
-            students = self.data_manager.load_all_students_list()
+            students = self.dataManager.loadAllStudentsList()
 
             if len(students) == 0:
                 print("No student data found.\n")
@@ -85,7 +85,7 @@ class AdminSystem:
 
             if 1 <= choice <= len(students):
                 student = students[choice - 1]
-                self.data_manager.delete_student(student.id)
+                self.dataManager.deleteStudent(student.id)
                 print(f"Student {student.name} ({student.id}) has been removed.\n")
                 input("Press Enter to continue...")
                 break
@@ -98,7 +98,7 @@ class AdminSystem:
         confirm = input("Are you sure you want to clear all student data? (yes/no): ")
 
         if confirm.lower() == "yes":
-            self.data_manager.save_all_students([])
+            self.dataManager.saveAllStudents([])
             print("All student data has been cleared.\n")
         else:
             print("Operation cancelled.\n")
