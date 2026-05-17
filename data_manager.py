@@ -4,22 +4,22 @@ from subject import Subject
 
 
 class DataManager:
-    def __init__(self, file_name="student.data"):
+    def __init__(self, fileName="student.data"):
         base_dir = os.path.dirname(os.path.abspath(__file__))
-        self.file_name = os.path.join(base_dir, file_name)
-        self.create_file()
+        self.fileName = os.path.join(base_dir, fileName)
+        self.createFile()
 
-    def create_file(self):
-        if not os.path.exists(self.file_name):
-            with open(self.file_name, "w", encoding="utf-8") as file:
+    def createFile(self):
+        if not os.path.exists(self.fileName):
+            with open(self.fileName, "w", encoding="utf-8") as file:
                 pass
 
-    def generate_student_id(self):
-        students = self.load_all_students_list()
+    def generateStudentId(self):
+        students = self.loadAllStudentsList()
         new_id = len(students) + 1
         return str(new_id).zfill(6)
 
-    def student_to_line(self, student):
+    def studentToLine(self, student):
         subject_parts = []
         for subject in student.subjects:
             subject_parts.append(f"{subject.subjectId}:{subject.mark}")
@@ -27,7 +27,7 @@ class DataManager:
         subjects_str = "|".join(subject_parts)
         return f"{student.id},{student.name},{student.email},{student.password},{subjects_str}\n"
 
-    def line_to_student(self, line):
+    def lineToStudent(self, line):
         line = line.strip()
         if line == "":
             return None
@@ -61,49 +61,49 @@ class DataManager:
 
         return student
 
-    def load_all_students_list(self):
+    def loadAllStudentsList(self):
         students = []
-        self.create_file()
+        self.createFile()
 
-        with open(self.file_name, "r", encoding="utf-8") as file:
+        with open(self.fileName, "r", encoding="utf-8") as file:
             for line in file:
-                student = self.line_to_student(line)
+                student = self.lineToStudent(line)
                 if student is not None:
                     students.append(student)
 
         return students
 
-    def load_all_students_dict(self):
+    def loadAllStudentsDict(self):
         students_dict = {}
-        students = self.load_all_students_list()
+        students = self.loadAllStudentsList()
 
         for student in students:
             students_dict[student.email] = student
 
         return students_dict
 
-    def save_all_students(self, students):
-        with open(self.file_name, "w", encoding="utf-8") as file:
+    def saveAllStudents(self, students):
+        with open(self.fileName, "w", encoding="utf-8") as file:
             for student in students:
-                file.write(self.student_to_line(student))
+                file.write(self.studentToLine(student))
 
-    def add_student(self, student):
-        with open(self.file_name, "a", encoding="utf-8") as file:
-            file.write(self.student_to_line(student))
+    def addStudent(self, student):
+        with open(self.fileName, "a", encoding="utf-8") as file:
+            file.write(self.studentToLine(student))
 
-    def update_student(self, updated_student):
-        students = self.load_all_students_list()
+    def updateStudent(self, updated_student):
+        students = self.loadAllStudentsList()
 
         for i in range(len(students)):
             if students[i].id == updated_student.id:
                 students[i] = updated_student
-                self.save_all_students(students)
+                self.saveAllStudents(students)
                 return True
 
         return False
 
-    def delete_student(self, student_id):
-        students = self.load_all_students_list()
+    def deleteStudent(self, student_id):
+        students = self.loadAllStudentsList()
         new_students = []
         deleted = False
 
@@ -114,16 +114,16 @@ class DataManager:
                 new_students.append(student)
 
         if deleted:
-            self.save_all_students(new_students)
+            self.saveAllStudents(new_students)
 
         return deleted
 
-    def email_exists(self, email):
-        students_dict = self.load_all_students_dict()
+    def emailExists(self, email):
+        students_dict = self.loadAllStudentsDict()
         return email in students_dict
 
-    def find_student_by_login(self, email, password):
-        students_dict = self.load_all_students_dict()
+    def findStudentByLogin(self, email, password):
+        students_dict = self.loadAllStudentsDict()
 
         if email in students_dict:
             student = students_dict[email]
@@ -132,11 +132,11 @@ class DataManager:
 
         return None
 
-    def get_student_count(self):
-        return len(self.load_all_students_list())
+    def getStudentCount(self):
+        return len(self.loadAllStudentsList())
 
-    def get_student_names(self):
-        students = self.load_all_students_list()
+    def getStudentNames(self):
+        students = self.loadAllStudentsList()
         names = []
 
         for student in students:
