@@ -1,7 +1,7 @@
 from getpass import getpass
 import random
 from data_manager import DataManager, Subject
-from student import Student
+from Model.student import Student
 import os
 
 

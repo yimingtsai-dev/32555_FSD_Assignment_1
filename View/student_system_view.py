@@ -1,11 +1,11 @@
 from data_manager import DataManager
 from student_system import StudentSystem
-from login_controller import LoginController
-from register_controller import RegisterController
-from dashboard_controller import DashboardController
-from login_view import LoginFrame
-from register_view import RegisterFrame
-from dashboard_view import DashboardFrame
+from Controller.login_controller import LoginController
+from Controller.register_controller import RegisterController
+from Controller.dashboard_controller import DashboardController
+from View.login_view import LoginFrame
+from View.register_view import RegisterFrame
+from View.dashboard_view import DashboardFrame
 
 
 class StudentSystemView:

@@ -1,5 +1,5 @@
 from admin_system import AdminSystem
-from student_system_view import StudentSystemView
+from View.student_system_view import StudentSystemView
 import tkinter as tk
 
 def main():

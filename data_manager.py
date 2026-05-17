@@ -1,6 +1,6 @@
 import os
-from student import Student
-from subject import Subject
+from Model.student import Student
+from Model.subject import Subject
 
 
 class DataManager:
