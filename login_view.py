@@ -12,10 +12,7 @@ class LoginFrame(tk.Frame):
         self.emailLabel.grid(row=1, column=0, sticky="w")
 
         self.emailText = tk.StringVar()
-        self.emailField = tk.Entry(self, textvariable=self.emailText, fg="grey", width=40)
-        self.emailField.insert(0, "ex: firstname.lastname@university.com")
-        self.emailField.bind("<FocusIn>", self._clearEmailPlaceholder)
-        self.emailField.bind("<FocusOut>", self._restoreEmailPlaceholder)
+        self.emailField = tk.Entry(self, textvariable=self.emailText, fg="white", width=40)
         self.emailField.grid(row=1, column=1, pady=6, sticky="ew")
         self.grid_columnconfigure(1, weight=1)
 
@@ -41,14 +38,4 @@ class LoginFrame(tk.Frame):
         self.emailField.delete(0, tk.END)
         self.passwordField.delete(0, tk.END)
         self.statusText.config(text="")
-        self._restoreEmailPlaceholder()
 
-    def _clearEmailPlaceholder(self, event=None) -> None:
-        if self.emailField.get() == "ex: firstname.lastname@university.com":
-            self.emailField.delete(0, tk.END)
-            self.emailField.config(fg="black")
-
-    def _restoreEmailPlaceholder(self, event=None) -> None:
-        if not self.emailField.get():
-            self.emailField.insert(0, "ex: firstname.lastname@university.com")
-            self.emailField.config(fg="grey")
