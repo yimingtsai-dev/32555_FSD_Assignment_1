@@ -14,7 +14,7 @@ class DashboardController:
             if new_id not in existing_ids:
                 return new_id
 
-    def handleEnrol(self, frame):
+    def handleEnroll(self, frame):
         if self.app.currentStudent is None:
             return
 
