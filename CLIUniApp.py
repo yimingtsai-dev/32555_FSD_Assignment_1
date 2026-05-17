@@ -1,5 +1,5 @@
 from admin_system import AdminSystem
-from controller import StudentGUI
+from student_system_view import StudentSystemView
 import tkinter as tk
 
 def main():
@@ -13,7 +13,7 @@ def main():
 
         if ip == "1":
             root = tk.Tk()
-            StudentGUI(root)
+            StudentSystemView(root)
             root.mainloop()
         elif ip == "2":
             asys = AdminSystem()
