@@ -29,7 +29,7 @@ class DashboardFrame(tk.Frame):
         table_frame.pack(fill="both", expand=True)
 
         self.buttonFrame = tk.Frame(self, bg='black', pady=20)
-        btnEnroll = tk.Button(self.buttonFrame, text="Enrol Subject", width=16, command=lambda: controller.handleEnroll(self))
+        btnEnroll = tk.Button(self.buttonFrame, text="Enroll Subject", width=16, command=lambda: controller.handleEnroll(self))
         btnRemove = tk.Button(self.buttonFrame, text="Remove Selected", width=16, command=lambda: controller.handleRemoveSubject(self))
         btnChangePassword = tk.Button(self.buttonFrame, text="Change Password", width=16, command=lambda: controller.handleChangePassword(self))
         btnLogout = tk.Button(self.buttonFrame, text="Logout", width=16, command=lambda: controller.handleLogout(self))
