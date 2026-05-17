@@ -1,4 +1,6 @@
 from student_system import StudentSystem
+from admin_system import AdminSystem
+
 import os
 def main():
     while True:
@@ -16,8 +18,8 @@ def main():
             ss.run()
         elif ip == "2":
             os.system("cls")
-            # Admin system is not implemented, so we just print a message and return to the main menu
-            break
+            asys = AdminSystem()
+            asys.run()
         elif ip == "3":
             print("System out!")
             break
