@@ -1,25 +1,26 @@
 from admin_system import AdminSystem
 from View.student_system_view import StudentSystemView
 import tkinter as tk
+import os
+
+
+def clear_screen():
+    os.system("cls" if os.name == "nt" else "clear")
+
 
 def main():
     while True:
-        print("Welcome To UniApp CLI version! Select your subsystem")
-        print("1: Login as student")
-        print("2: Login as admin")
-        print("3: Exit system")
+        ip = input("University System: (A)dmin, (S)tudent, or X : ").strip()
 
-        ip = input("Enter your option: ")
-
-        if ip == "1":
+        if ip.upper() == "A":
+            asys = AdminSystem()
+            asys.run()
+        elif ip.upper() == "S":
             root = tk.Tk()
             StudentSystemView(root)
             root.mainloop()
-        elif ip == "2":
-            asys = AdminSystem()
-            asys.run()
-        elif ip == "3":
-            print("System out!")
+        elif ip.upper() == "X":
+            print("Thank You")
             break
         else:
             print("Invalid input! Please try again.")

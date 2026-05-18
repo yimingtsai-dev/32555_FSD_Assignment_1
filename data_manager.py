@@ -4,7 +4,7 @@ from Model.subject import Subject
 
 
 class DataManager:
-    def __init__(self, fileName="student.data"):
+    def __init__(self, fileName="students.data"):
         base_dir = os.path.dirname(os.path.abspath(__file__))
         self.fileName = os.path.join(base_dir, fileName)
         self.createFile()

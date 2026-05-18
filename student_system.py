@@ -1,8 +1,12 @@
-from getpass import getpass
+import re
 import random
 from data_manager import DataManager, Subject
 from Model.student import Student
 import os
+
+
+def clear_screen():
+    os.system("cls" if os.name == "nt" else "clear")
 
 
 class StudentSystem:
@@ -12,302 +16,181 @@ class StudentSystem:
 
     def run(self):
         while True:
-            print("Student System")
-            print("1: New register")
-            print("2: Login")
-            print("3: Exit to main menu\n")
+            ip = input("Student System (l/r/x): ").strip().lower()
 
-            ip = input("Enter your option: ")
-
-            if ip == "1":
-                os.system("cls")
-                print("New register")
+            if ip == "r":
                 self.registerStudent()
-            elif ip == "2":
-                os.system("cls")
+            elif ip == "l":
                 self.loginStudent()
-            elif ip == "3":
-                print("Returning to main menu...")
+            elif ip == "x":
                 break
             else:
-                print("Invalid input! Please try again")
+                print("Invalid input! Please try again.")
 
     def registerStudent(self):
+        print("Student Sign Up")
         while True:
-            name = input("Enter your name: ")
-            email = input("Enter your email: ")
+            email = input("   Email: ")
+            password = input("   Password: ")
 
-            if self.checkValidNameEmail(name, email):
-                if self.dataManager.emailExists(email):
-                    print("This email is already registered. Please try again.\n")
-                else:
-                    break
+            if not self._validateEmail(email) or not self._validatePassword(password):
+                print("   Incorrect email or password format")
+                continue
 
-        os.system("cls")
+            print("   email and password formats acceptable")
 
-        while True:
-            pwd = getpass("Enter your password: ")
+            if self.dataManager.emailExists(email):
+                print("   Student {0} already exists".format(self._emailToName(email)))
+                return
 
-            if self.checkValidPwd(pwd):
-                repwd = getpass("Confirm your password: ")
+            name = input("   Name: ")
+            student_id = self.dataManager.generateStudentId()
+            student = Student(student_id, name, email, password)
+            self.dataManager.addStudent(student)
 
-                if repwd == pwd:
-                    print("Password confirmed, creating student data...")
-                    break
-                else:
-                    print("Passwords do not match. Please try again.\n")
+            print("   Enrolling Student {0}".format(name))
+            print("   Registration successful. Your student ID is {0}".format(student_id))
 
-        student_id = self.dataManager.generateStudentId()
-        student = Student(student_id, name, email, pwd)
-
-        self.dataManager.addStudent(student)
-        self.currentStudent = student
-
-        print(f"Registration successful. Your student ID is {student.id}\n")
-        input("Press Enter to continue...")
-        os.system("cls")
-        self.menu()
+            self.currentStudent = student
+            self.menu()
+            return
 
     def loginStudent(self):
+        print("Student Sign In")
         while True:
-            print("Login")
-            print("Enter 'exit' at any time to return to the previous menu.\n")
-            email = input("Enter your email: ")
+            email = input("   Email: ")
+            password = input("   Password: ")
 
-            if email.lower() == "exit":
-                os.system("cls")
-                break
+            if not self._validateEmail(email) or not self._validatePassword(password):
+                print("   Incorrect email or password format")
+                continue
 
-            pwd = getpass("Enter your password: ")
+            print("   email and password formats acceptable")
 
-            if pwd.lower() == "exit":
-                os.system("cls")
-                break
+            student = self.dataManager.findStudentByLogin(email, password)
 
-            student = self.dataManager.findStudentByLogin(email, pwd)
+            if student is None:
+                print("   Student does not exist")
+                return
 
-            if student is not None:
-                self.currentStudent = student
-                print(f"Login successful. Welcome, {student.name}.\n")
-                input("Press Enter to continue...")
-                os.system("cls")
-                self.menu()
-                break
-            else:
-                print("Invalid email or password.\n")
-                input("Press Enter to try again...")
-                os.system("cls")
+            self.currentStudent = student
+            print("   Login successful. Welcome, {0}.".format(student.name))
+            self.menu()
+            return
 
+    def _validateEmail(self, email):
+        pattern = r'^[a-zA-Z]+\.[a-zA-Z]+@university\.com$'
+        return bool(re.match(pattern, email))
+
+    def _validatePassword(self, password):
+        pattern = r'^[A-Z][a-zA-Z]{4,}\d{3,}$'
+        return bool(re.match(pattern, password))
+
+    # --- Public aliases used by GUI controllers ---
     def checkValidNameEmail(self, name, email):
+        """GUI register_controller calls this to validate name + email."""
         parts = name.strip().split()
-
         if len(parts) != 2:
-            print("Invalid name! Please enter first name and last name.\n")
             return False
-
-        first_name = parts[0]
-        last_name = parts[1]
-
-        expected_email = f"{first_name.lower()}.{last_name.lower()}@university.com"
-
-        if email.lower() != expected_email:
-            print("Invalid email format! Please try again.\n")
+        first, last = parts
+        expected = "{0}.{1}@university.com".format(first.lower(), last.lower())
+        if email.lower() != expected:
             return False
-
-        return True
+        return self._validateEmail(email)
 
     def checkValidPwd(self, password):
-        if not password:
-            print("Password cannot be empty.\n")
-            return False
+        """GUI register_controller calls this to validate password."""
+        return self._validatePassword(password)
 
-        if not password[0].isupper():
-            print("Password must start with an upper-case letter.\n")
-            return False
+    def _emailToName(self, email):
+        local = email.split("@")[0]
+        parts = local.split(".")
+        return " ".join(p.capitalize() for p in parts)
 
-        letters_part = ""
-        digits_part = ""
-        i = 0
-
-        while i < len(password) and password[i].isalpha():
-            letters_part += password[i]
-            i += 1
-
-        while i < len(password) and password[i].isdigit():
-            digits_part += password[i]
-            i += 1
-
-        if i != len(password):
-            print("Password must contain letters first, followed by digits only.\n")
-            return False
-
-        if len(letters_part) < 5:
-            print("Password must contain at least five letters.\n")
-            return False
-
-        if len(digits_part) < 3:
-            print("Password must be followed by at least three digits.\n")
-            return False
-
-        return True
-    
     def menu(self):
         while True:
-            os.system("cls")
-            print(f"Welcome, {self.currentStudent.name}！ SID: {self.currentStudent.id}")
-            print("Student Menu")
-            print("1: Enrol in a subject")
-            print("2: Remove a subject from enrolment list")
-            print("3: View current enrolment list")
-            print("4: Change password")
-            print("5: Logout\n")
+            ip = input("Student Course Menu (c/e/r/s/x): ").strip().lower()
 
-            ip = input("Enter your option: ")
-
-            if ip == "1":
-                self.enrolSubject()
-            elif ip == "2":
-                print("Remove subject function")
-                self.removeSubject()
-            elif ip == "3":
-                print("View enrolment list function")
-                self.viewEnrolmentList()
-            elif ip == "4":
+            if ip == "c":
                 self.changePassword()
-            elif ip == "5":
-                os.system("cls")
+            elif ip == "e":
+                self.enrolSubject()
+            elif ip == "r":
+                self.removeSubject()
+            elif ip == "s":
+                self.viewEnrolmentList()
+            elif ip == "x":
                 self.currentStudent = None
                 break
             else:
-                print("Invalid input! Please try again.\n")
-                input("Press Enter to continue...")
+                print("Invalid input! Please try again.")
 
     def enrolSubject(self):
-        if self.currentStudent is None:
-            print("No student is currently logged in.\n")
-            return
-
         if len(self.currentStudent.subjects) >= 4:
-            print("You cannot enrol in more than four subjects.\n")
+            print("   Students are allowed to enrol in 4 subjects only")
             return
-        os.system("cls")
-        subject_id = self.generateSubjectId()
-        mark = random.randint(25, 100)
 
+        subject_id = self._generateSubjectId()
+        mark = random.randint(25, 100)
         new_subject = Subject(subject_id, mark)
         self.currentStudent.subjects.append(new_subject)
-
         self.dataManager.updateStudent(self.currentStudent)
 
-        print("Subject enrolled successfully.")
-        print(f"Subject ID: {new_subject.subjectId}")
-        print(f"Mark: {new_subject.mark}")
-        print(f"Grade: {new_subject.grade}\n")
-        print("Press Enter to continue...")
-        input()
-        os.system("cls")
-    
-    def generateSubjectId(self):
-        current_ids = set()
+        count = len(self.currentStudent.subjects)
+        print("   Enrolling in Subject-{0}".format(subject_id))
+        print("   You are now enrolled in {0} out of 4 subjects".format(count))
 
-        for subject in self.currentStudent.subjects:
-            current_ids.add(subject.subjectId)
-
+    def _generateSubjectId(self):
+        current_ids = {s.subjectId for s in self.currentStudent.subjects}
         while True:
             new_id = str(random.randint(1, 999)).zfill(3)
             if new_id not in current_ids:
                 return new_id
 
     def removeSubject(self):
-        if self.currentStudent is None:
-            print("No student is currently logged in.\n")
-            input("Press Enter to continue...")
-            return
-
         if len(self.currentStudent.subjects) == 0:
-            print("No enrolled subject.\n")
-            input("Press Enter to continue...")
+            print("   No enrolled subjects.")
             return
 
-        while True:
-            os.system("cls")
-            print("Current Enrolment List")
+        subject_id = input("   Remove Subject by ID: ").strip()
 
-            for i, subject in enumerate(self.currentStudent.subjects, start=1):
-                print(f"{i}. Subject ID: {subject.subjectId}, Mark: {subject.mark}, Grade: {subject.grade}")
-
-            print(f"{len(self.currentStudent.subjects) + 1}. Exit\n")
-
-            choice = input("Select the subject number to remove: ")
-
-            if not choice.isdigit():
-                print("Invalid input! Please try again.\n")
-                input("Press Enter to continue...")
-                continue
-
-            choice = int(choice)
-
-            if choice == len(self.currentStudent.subjects) + 1:
+        target = None
+        for s in self.currentStudent.subjects:
+            if s.subjectId == subject_id:
+                target = s
                 break
 
-            if 1 <= choice <= len(self.currentStudent.subjects):
-                self.currentStudent.subjects.pop(choice - 1)
-                self.dataManager.updateStudent(self.currentStudent)
-                print("Subject removed successfully.\n")
-                input("Press Enter to continue...")
-                os.system("cls")    
-                break
-            else:
-                print("Invalid option! Please try again.\n")
-                input("Press Enter to continue...")
+        if target is None:
+            print("   Subject {0} not found.".format(subject_id))
+            return
+
+        self.currentStudent.subjects.remove(target)
+        self.dataManager.updateStudent(self.currentStudent)
+        count = len(self.currentStudent.subjects)
+        print("   Droping Subject-{0}".format(subject_id))
+        print("   You are now enrolled in {0} out of 4 subjects".format(count))
+
     def viewEnrolmentList(self):
-        os.system("cls")
-        if self.currentStudent is None:
-            print("No student is currently logged in.\n")
-            input("Press Enter to continue...")
-            return
-        if len(self.currentStudent.subjects) == 0:
-            print("No enrolled subject.\n")
-            input("Press Enter to continue...")
-            return
-
-        print("Current Enrolment List")
-        for subject in self.currentStudent.subjects:
-            print(f"Subject ID: {subject.subjectId}, Mark: {subject.mark}, Grade: {subject.grade}")
-        print()
-        input("Press Enter to continue...")
-        os.system("cls")
+        count = len(self.currentStudent.subjects)
+        print("   Showing {0} subjects".format(count))
+        for s in self.currentStudent.subjects:
+            print("   [ Subject::{0} -- mark = {1} -- grade = {2:>3} ]".format(
+                s.subjectId, s.mark, s.grade))
 
     def changePassword(self):
-        os.system("cls")
-
-        if self.currentStudent is None:
-            print("No student is currently logged in.\n")
-            input("Press Enter to continue...")
-            return
-
-        old_pwd = getpass("Enter your current password: ")
-
-        if old_pwd != self.currentStudent.password:
-            print("Incorrect current password.\n")
-            input("Press Enter to continue...")
-            return
-
+        print("   Updating Password")
         while True:
-            new_pwd = getpass("Enter your new password: ")
+            new_pwd = input("   New Password: ")
+            confirm_pwd = input("   Confirm Password: ")
 
-            if not self.checkValidPwd(new_pwd):
+            if new_pwd != confirm_pwd:
+                print("   Password does not match -- try again")
                 continue
 
-            confirm_pwd = getpass("Confirm your new password: ")
-
-            if confirm_pwd != new_pwd:
-                print("Passwords do not match. Please try again.\n")
+            if not self._validatePassword(new_pwd):
+                print("   Incorrect password format")
                 continue
 
             self.currentStudent.password = new_pwd
             self.dataManager.updateStudent(self.currentStudent)
-            print("Password changed successfully.\n")
-            input("Press Enter to continue...")
-            os.system("cls")
             break
