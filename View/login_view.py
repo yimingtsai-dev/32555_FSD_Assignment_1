@@ -14,7 +14,7 @@ class LoginFrame(tk.Frame):
 
         self.emailText = tk.StringVar()
         self.emailText.trace_add("write", self._onEmailChange)
-        self.emailField = tk.Entry(self, textvariable=self.emailText, fg="black", width=40)
+        self.emailField = tk.Entry(self, textvariable=self.emailText, fg="black", bg="white", width=40)
         self.emailField.grid(row=1, column=1, pady=6, sticky="ew")
         self.grid_columnconfigure(1, weight=1)
 

@@ -12,7 +12,7 @@ class RegisterFrame(tk.Frame):
         self.nameLabel = tk.Label(self, text="Name:", anchor="w", width=16, fg='white', bg='black')
         self.nameLabel.grid(row=1, column=0, sticky="w")
         self.nameText = tk.StringVar()
-        self.nameField = tk.Entry(self, textvariable=self.nameText, fg="black", width=40)
+        self.nameField = tk.Entry(self, textvariable=self.nameText,fg="black", bg="white", width=40)
         self.nameField.grid(row=1, column=1, pady=6)
         self.nameField.focus()
 
@@ -21,7 +21,7 @@ class RegisterFrame(tk.Frame):
         self.emailLabel.grid(row=2, column=0, sticky="w")
         self.emailText = tk.StringVar()
         self.emailText.trace_add("write", self._onEmailChange)
-        self.emailField = tk.Entry(self, textvariable=self.emailText, fg="black", width=40)
+        self.emailField = tk.Entry(self, textvariable=self.emailText, fg="black", bg="white", width=40)
         self.emailField.grid(row=2, column=1, pady=6)
         self.emailRules = tk.Label(
             self,
@@ -43,7 +43,7 @@ class RegisterFrame(tk.Frame):
         self.passwordLabel = tk.Label(self, text="Password:", anchor="w", width=16, fg='white', bg='black')
         self.passwordLabel.grid(row=5, column=0, sticky="w")
         self.passwordText = tk.StringVar()
-        self.passwordField = tk.Entry(self, textvariable=self.passwordText, fg="black", width=40, show="*", bd=2)
+        self.passwordField = tk.Entry(self, textvariable=self.passwordText, fg="black", bg="white", width=40, show="*", bd=2)
         self.passwordField.grid(row=5, column=1, pady=6)
         self.passwordRules = tk.Label(
             self,
@@ -61,7 +61,7 @@ class RegisterFrame(tk.Frame):
         self.confirmPasswordLabel = tk.Label(self, text="Confirm Password:", anchor="w", width=16, fg='white', bg='black')
         self.confirmPasswordLabel.grid(row=7, column=0, sticky="w")
         self.confirmPasswordText = tk.StringVar()
-        self.confirmPasswordField = tk.Entry(self, textvariable=self.confirmPasswordText, fg="black", width=40, show="*", bd=2)
+        self.confirmPasswordField = tk.Entry(self, textvariable=self.confirmPasswordText, fg="black", bg="white", width=40, show="*", bd=2)
         self.confirmPasswordField.grid(row=7, column=1, pady=6)
 
         # Status label for error messages
