@@ -14,20 +14,33 @@ class RegisterController:
         password = frame.passwordText.get()
         confirm_password = frame.confirmPasswordText.get()
 
+        if name == "" or email == "" or password == "" or confirm_password == "":
+            frame.registerStatus.config(text="Please complete all fields.")
+            return
+
+        name_parts = name.split()
+        if len(name_parts) != 2:
+            frame.registerStatus.config(text="Please enter first name and last name, for example John Smith.")
+            return
+
+        if not self.app.system._validateEmail(email):
+            frame.registerStatus.config(text="Invalid email format. Use firstname.lastname@university.com.")
+            return
+
         if not self.app.system.checkValidNameEmail(name, email):
-            frame.registerStatus.config(text="Invalid name or email format.")
+            frame.registerStatus.config(text="Email must match the entered first and last name.")
             return
 
         if self.app.dataManager.emailExists(email):
             frame.registerStatus.config(text="This email is already registered.")
             return
 
-        if password != confirm_password:
-            frame.registerStatus.config(text="Passwords do not match.")
+        if not self.app.system.checkValidPwd(password):
+            frame.registerStatus.config(text="Invalid password format. Use uppercase letter, at least 5 letters, then 3 or more digits.")
             return
 
-        if not self.app.system.checkValidPwd(password):
-            frame.registerStatus.config(text="Password must start with uppercase letters and end with at least 3 digits.")
+        if password != confirm_password:
+            frame.registerStatus.config(text="Passwords do not match.")
             return
 
         student_id = self.app.dataManager.generateStudentId()
