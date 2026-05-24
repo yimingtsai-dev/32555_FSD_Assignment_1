@@ -1,4 +1,5 @@
 from admin_system import AdminSystem
+from student_system import StudentSystem
 from View.student_system_view import StudentSystemView
 import tkinter as tk
 import os
@@ -16,9 +17,8 @@ def main():
             asys = AdminSystem()
             asys.run()
         elif ip.upper() == "S":
-            root = tk.Tk()
-            StudentSystemView(root)
-            root.mainloop()
+            ssys = StudentSystem()
+            ssys.run()
         elif ip.upper() == "X":
             print("Thank You")
             break

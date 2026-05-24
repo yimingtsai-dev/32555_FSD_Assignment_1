@@ -1,4 +1,5 @@
 import os
+import random
 from Model.student import Student
 from Model.subject import Subject
 
@@ -16,8 +17,11 @@ class DataManager:
 
     def generateStudentId(self):
         students = self.loadAllStudentsList()
-        new_id = len(students) + 1
-        return str(new_id).zfill(6)
+        existing_ids = {student.id for student in students}
+        while True:
+            new_id = str(random.randint(1, 999999)).zfill(6)
+            if new_id not in existing_ids:
+                return new_id
 
     def studentToLine(self, student):
         subject_parts = []
