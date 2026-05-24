@@ -1,7 +1,6 @@
 from admin_system import AdminSystem
 from student_system import StudentSystem
-from View.student_system_view import StudentSystemView
-import tkinter as tk
+
 import os
 
 
